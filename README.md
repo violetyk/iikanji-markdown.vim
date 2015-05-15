@@ -1,0 +1,1 @@
+# iikanji-markdown.vim
