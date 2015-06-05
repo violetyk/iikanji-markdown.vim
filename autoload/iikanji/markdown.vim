@@ -32,6 +32,54 @@ function! iikanji#markdown#register_variables() abort
         \ 'xml',
         \ ]
   let g:markdown_fenced_languages = uniq(sort(languages))
+
+
+  let g:iikanji#markdown#use_abbrev       = get(g:, 'iikanji#markdown#use_abbrev', 1)
+  let g:iikanji#markdown#abbrev           = get(g:, 'iikanji#markdown#abbrev', {})
+  let g:iikanji#markdown#abbrev.task      = get(g:iikanji#markdown#abbrev, 'task', 'td')
+  let g:iikanji#markdown#abbrev.task_list = get(g:iikanji#markdown#abbrev, 'task_list', 'tl')
+
+  let g:iikanji#markdown#use_indent_with_tab = get(g:, 'iikanji#markdown#use_indent_with_tab', 1)
+
+  let g:iikanji#markdown#mapping#toggle_checkbox = get(g:, 'iikanji#markdown#mapping#toggle_checkbox', '<Leader><Leader>')
+
+
+endfunction
+
+function! iikanji#markdown#toggle_checkbox() abort
+  let l = getline('.')
+  if l =~ '\-\s\[\s\]'
+    call setline('.', substitute(l, '\-\s\[\s\]', '- [x]', ''))
+  elseif l =~ '\-\s\[x\]'
+    call setline('.', substitute(l, '\-\s\[x\]',  '- [ ]', ''))
+  elseif l =~ '+\s\[\s\]'
+    call setline('.', substitute(l, '+\s\[\s\]', '+ [x]', ''))
+  elseif l =~ '+\s\[x\]'
+    call setline('.', substitute(l, '+\s\[x\]',  '+ [ ]', ''))
+  elseif l =~ '\*\s\[\s\]'
+    call setline('.', substitute(l, '\*\s\[\s\]', '* [x]', ''))
+  elseif l =~ '\*\s\[x\]'
+    call setline('.', substitute(l, '\*\s\[x\]',  '* [ ]', ''))
+  end
+endfunction
+
+function! iikanji#markdown#indent_with_tab(arrow) abort
+  let l = getline('.')
+  if l =~ '^\s*[\-\+\*]'
+    let c = col('.')
+    if a:arrow > 0
+      let c += shiftwidth()
+      execute 'normal ' count . '>>'
+    else
+      let c -= shiftwidth()
+      execute 'normal ' count . '<<'
+    endif
+    if strwidth(getline('.')) == c
+      let c += 1
+    endif
+    echo c
+    call cursor(line('.'), c)
+  end
 endfunction
 
 let &cpo = s:save_cpo
