@@ -3,7 +3,6 @@ set cpo&vim
 
 function! iikanji#markdown#register_variables() abort
   let languages = get(g:, 'markdown_fenced_languages', [])
-  " let languages += map(split(globpath(&runtimepath, 'syntax/*.vim'), '\n'), 'fnamemodify(v:val, ":t:r")')
   let languages += [
         \ 'vim',
         \ 'c',
@@ -31,8 +30,10 @@ function! iikanji#markdown#register_variables() abort
         \ 'html',
         \ 'xml',
         \ ]
-  let g:markdown_fenced_languages = uniq(sort(languages))
+  let languages = uniq(sort(languages))
 
+  let all_syntax = map(split(globpath(&runtimepath, 'syntax/*.vim'), '\n'), 'fnamemodify(v:val, ":t:r")')
+  let g:markdown_fenced_languages = filter(languages, 'index(all_syntax, split(v:val, "=")[-1]) != -1')
 
   let g:iikanji#markdown#use_abbrev       = get(g:, 'iikanji#markdown#use_abbrev', 1)
   let g:iikanji#markdown#abbrev           = get(g:, 'iikanji#markdown#abbrev', {})
