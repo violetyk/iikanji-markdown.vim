@@ -78,7 +78,6 @@ function! iikanji#markdown#indent_with_tab(arrow) abort
     if strwidth(getline('.')) == c
       let c += 1
     endif
-    echo c
     call cursor(line('.'), c)
   end
 endfunction
